@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pavadinimas</title>
+    <meta charset="utf-8" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .box {
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+        }
+
+        .box .row.header {
+            flex: 0 1 auto;
+        }
+
+        .box .row.content {
+            flex: 1 1 auto;
+        }
+
+        .input-container {
+            margin: 20px;
+        }
+    </style>
+</head> 
+
+<body class="box">
+    <h1 class="row header">Nebaigta lentele</h1>
+
+    <div class="input-container">
+        <label for="n_reiksme">įveskite taškų kiekį:</label>
+        <input type="number" id="tasku_kiekis" />
+        <br />
+        <label for="k_reiksme">įveskite maksimalią taškų vertę:</label>
+        <input type="number" id="max_verte"  />
+        <br />
+        <button id="sukurt">Sugeneruoti grafika</button>
+
+    </div>
+    <div>
+        <label for="x_reiksme">įveskite x1 reiksme:</label>
+        <input type="number" id="x1" />
+        <br />
+        <label for="k_reiksme">įveskite x2 reiksme:</label>
+        <input type="number" id="x2"  />
+        <br />
+        <button id="sukurt2">Sugeneruoti lentele</button>
+    </div>
+
+    <div class="range">
+        <div class="range-slider">
+          <span class="range-selected"></span>
+        </div>
+        <div class="range-input">
+          <input type="range" class="min" min="0" max="1000" value="300">
+          <input type="range" class="max" min="0" max="1000" value="700">
+        </div>
+      </div> 
+
+    <!-- Create div to render the chart into-->
+    <div id="myDiv" class="row content"></div>
+    <div id="myDiv2" class="row content2"></div>
+
+    <!-- Include Plotly.js from CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script>
+         var Xsai = [];
+         var Ygrikai = [];
+
+        document.getElementById('sukurt').addEventListener('click', function () {
+            var n = parseInt(document.getElementById('tasku_kiekis').value);
+            var k = parseInt(document.getElementById('max_verte').value);
+
+           
+
+            for (let i = 1; i <= n; i++) {
+                Xsai[i] = i; 
+                Ygrikai[i] = Math.floor(Math.random() * k) + 1;
+            }
+
+           
+            var trace1 = {
+                x: Xsai,
+                y: Ygrikai,
+                mode: 'markers',
+                type: 'scatter',
+                text: Xsai.map(i => `A-${i}`), 
+                marker: { size: 12 }
+            };         
+            var data = [trace1];
+
+            var layout = {
+                xaxis: {
+                    title: 'X',
+                    range: [0, n+1] 
+                },
+                yaxis: {
+                    title: 'Y',
+                    range: [-4, k+2 ] 
+                },
+                title: 'Scatter Plotas'
+            };
+
+          
+            Plotly.newPlot('myDiv', data, layout);
+        });
+
+
+        document.getElementById('sukurt2').addEventListener('click', function () {
+            var x1 = parseInt(document.getElementById('x1').value);
+            var x2 = parseInt(document.getElementById('x2').value);
+
+            var XsaiAtrinkti = [];
+            var YgrikaiAtrinkti = [];
+            let i = 0;
+            let k2 = 0;
+
+            for (let p = x1; p<=x2; p++){
+                XsaiAtrinkti[i] = Xsai[p];
+                YgrikaiAtrinkti[i] = Ygrikai[p];
+                if (YgrikaiAtrinkti[i] > k2){
+                    k2 = YgrikaiAtrinkti[i];
+                }
+
+                console.log(XsaiAtrinkti[i]);
+                i++;
+
+            }
+
+            var trace2 = {
+                x: XsaiAtrinkti,
+                y: YgrikaiAtrinkti,
+                mode: 'markers',
+                type: 'scatter',
+                text: Xsai.map(p => `A-${p}`), 
+                marker: { size: 12 }
+            };         
+            var data = [trace2];
+
+            var layout = {
+                xaxis: {
+                    title: 'X Atrinkti',
+                    range: [x1-2, x2+1] 
+                },
+                yaxis: {
+                    title: 'Y atrinkti',
+                    range: [-4, k2+5 ] 
+                },
+                title: 'Atrinktas Scatter Plotas'
+            };
+
+          
+            Plotly.newPlot('myDiv2', data, layout);
+
+        });
+    </script>
+</body>
+
+</html>
+
